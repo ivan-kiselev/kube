@@ -1,4 +1,4 @@
-//! Crate with types and traits necessary for interacting with the Kubernetes API
+//! Types and traits necessary for interacting with the Kubernetes API
 //!
 //! This crate provides the minimal apimachinery necessary to make requests to the kubernetes API.
 //!
@@ -24,6 +24,12 @@ pub use dynamic::{ApiResource, DynamicObject};
 
 pub mod crd;
 pub use crd::CustomResourceExt;
+
+pub mod cel;
+pub use cel::{Message, Reason, Rule};
+
+#[cfg(feature = "schema")]
+pub use cel::{merge_properties, validate, validate_property};
 
 pub mod gvk;
 pub use gvk::{GroupVersion, GroupVersionKind, GroupVersionResource};

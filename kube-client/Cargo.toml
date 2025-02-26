@@ -13,9 +13,11 @@ categories = ["web-programming::http-client", "network-programming", "api-bindin
 
 [features]
 default = ["client"]
-rustls-tls = ["rustls", "rustls-pemfile", "hyper-rustls", "hyper-http-proxy?/rustls-tls-native-roots"]
+rustls-tls = ["rustls", "hyper-rustls", "hyper-http-proxy?/rustls-tls-native-roots"]
+webpki-roots = ["hyper-rustls/webpki-roots"]
+aws-lc-rs = ["rustls?/aws-lc-rs"]
 openssl-tls = ["openssl", "hyper-openssl"]
-ws = ["client", "tokio-tungstenite", "rand", "kube-core/ws", "tokio/macros"]
+ws = ["client", "tokio-tungstenite", "kube-core/ws", "tokio/macros"]
 kubelet-debug = ["ws", "kube-core/kubelet-debug"]
 oauth = ["client", "tame-oauth"]
 oidc = ["client", "form_urlencoded"]
@@ -55,10 +57,9 @@ futures = { workspace = true, optional = true, features = ["std"] }
 pem = { workspace = true, optional = true }
 openssl = { workspace = true, optional = true }
 rustls = { workspace = true, optional = true }
-rustls-pemfile = { workspace = true, optional = true }
 bytes = { workspace = true, optional = true }
 tokio = { workspace = true, features = ["time", "signal", "sync"], optional = true }
-kube-core = { path = "../kube-core", version = "=0.93.1" }
+kube-core = { path = "../kube-core", version = "=0.98.0" }
 jsonpath-rust = { workspace = true, optional = true }
 tokio-util = { workspace = true, features = ["io", "codec"], optional = true }
 hyper = { workspace = true, features = ["client", "http1"], optional = true }
@@ -71,14 +72,14 @@ tower = { workspace = true, features = ["buffer", "filter", "util"], optional = 
 tower-http = { workspace = true, features = ["auth", "map-response-body", "trace"], optional = true }
 hyper-timeout = { workspace = true, optional = true }
 tame-oauth = { workspace = true, features = ["gcp"], optional = true }
-rand = { workspace = true, optional = true }
-secrecy = { workspace = true, features = ["alloc", "serde"] }
+secrecy = { workspace = true }
 tracing = { workspace = true, features = ["log"], optional = true }
 hyper-openssl = { workspace = true, features = ["client-legacy"], optional = true }
 form_urlencoded = { workspace = true, optional = true }
 k8s-openapi= { workspace = true, features = [] }
 
 [dev-dependencies]
+hyper = { workspace = true, features = ["server"] }
 kube = { path = "../kube", features = ["derive", "client", "ws"], version = "<1.0.0, >=0.61.0" }
 tempfile.workspace = true
 futures = { workspace = true, features = ["async-await"] }

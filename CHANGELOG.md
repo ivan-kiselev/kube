@@ -5,7 +5,146 @@
 <!-- next-header -->
 UNRELEASED
 ===================
- * see https://github.com/kube-rs/kube/compare/0.93.1...main
+ * see https://github.com/kube-rs/kube/compare/0.98.0...main
+
+[0.98.0](https://github.com/kube-rs/kube/releases/tag/0.98.0) / 2024-12-23
+===================
+<!-- Release notes generated using configuration in .github/release.yml at 0.98.0 -->
+
+## Highlights
+
+- [Kubernetes `v1_32`](https://kubernetes.io/blog/2024/12/11/kubernetes-v1-32-release/) support via `k8s-openapi` [0.24](https://github.com/Arnavion/k8s-openapi/releases/tag/v0.24.0)
+  * Please [upgrade k8s-openapi along with kube](https://kube.rs/upgrading/) to avoid conflicts.
+  * New minimum versions: [MSRV](https://kube.rs/rust-version/) 1.81.0, [MK8SV](https://kube.rs/kubernetes-version/): 1.28
+- `kube-derive` additions:
+  * A [`CELSchema`](https://docs.rs/kube/latest/kube/derive.CELSchema.html) derive macro wrapper around [`JsonSchema`](https://docs.rs/schemars/latest/schemars/trait.JsonSchema.html) for injecting [cel validations](https://kubernetes.io/docs/reference/using-api/cel/) into the schema [#1649](https://github.com/kube-rs/kube/pull/1649)
+  * Allow overriding `served` and `storage` booleans for [multiple versions](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definition-versioning/#specify-multiple-versions) of [`CustomResource`](https://docs.rs/kube/latest/kube/derive.CustomResource.html) derives: [#1644](https://github.com/kube-rs/kube/pull/1644)
+- `kube-runtime` event [`Recorder`](https://docs.rs/kube/latest/kube/runtime/events/struct.Recorder.html) now aggregates repeat events [#1655](https://github.com/kube-rs/kube/pull/1655) (some breaking changes, see [controller-rs#116](https://github.com/kube-rs/controller-rs/pull/116))
+- `kube-client` UTF-16 edge case handling for windows [#1654](https://github.com/kube-rs/kube/pull/1654)
+
+## What's Changed
+### Added
+* Add `storage` and `served` argument to derive macro by @Techassi in https://github.com/kube-rs/kube/pull/1644
+* Implement  `derive(CELSchema)` macro for generating cel validation on CRDs by @Danil-Grigorev in https://github.com/kube-rs/kube/pull/1649
+### Changed
+* Add series implementation for `runtime` event recorder by @pando85 in https://github.com/kube-rs/kube/pull/1655
+* Bump `k8s-openapi` for Kubernetes `v1_32` support and MSRV by @clux in https://github.com/kube-rs/kube/pull/1671
+* Update tokio-tungstenite requirement from 0.24.0 to 0.25.0 by @dependabot in https://github.com/kube-rs/kube/pull/1666
+### Fixed
+* Add support for UTF-16 encoded kubeconfig files by @goenning in https://github.com/kube-rs/kube/pull/1654
+
+[0.97.0](https://github.com/kube-rs/kube/releases/tag/0.97.0) / 2024-11-20
+===================
+<!-- Release notes generated using configuration in .github/release.yml at 0.97.0 -->
+
+## Highlights
+
+- [`CustomResource`](https://docs.rs/kube/latest/kube/derive.CustomResource.html) derive added features for crd yaml output:
+  * selectable fields [#1605](https://github.com/kube-rs/kube/issues/1605) + [#1610](https://github.com/kube-rs/kube/issues/1610)
+  * annotations and labels [#1631](https://github.com/kube-rs/kube/issues/1631)
+- Configuration edge cases:
+  * Avoid double installations of `aws-lc-rs` (rustls crypto) provider [#1617](https://github.com/kube-rs/kube/issues/1617)
+  * Kubeconfig fix for `null` user; [#1608](https://github.com/kube-rs/kube/issues/1608)
+  * Default runtime watcher backoff alignment with `client-go` [#1603](https://github.com/kube-rs/kube/issues/1603)
+- Feature use:
+  *  Client proxy feature-set misuse prevention [#1626](https://github.com/kube-rs/kube/issues/1626)
+  * Allow disabling `gzip` via `Config` [#1627](https://github.com/kube-rs/kube/issues/1627)
+- Depedency minors: `thiserror`, `hashbrown`, `jsonptr`, `json-patch`. Killed `lazy_static` / `once_cell`
+
+## What's Changed
+### Added
+* Feature: Allow to pass selectableFields for CRD definition by @Danil-Grigorev in https://github.com/kube-rs/kube/pull/1605
+* add support for CRD annotations and labels in kube-derive by @verokarhu in https://github.com/kube-rs/kube/pull/1631
+* Feature: Add config setting to disable gzip compression [#1627](https://github.com/kube-rs/kube/issues/1627) by @markdingram in https://github.com/kube-rs/kube/pull/1628
+### Changed
+* upgrade to hashbrown 0.15.0 by @rorosen in https://github.com/kube-rs/kube/pull/1599
+* update jsonptr + json-patch by @aviramha in https://github.com/kube-rs/kube/pull/1600
+### Fixed
+* fix(kube-runtime): setup backoff with builder pattern by @tiagolobocastro in https://github.com/kube-rs/kube/pull/1603
+* allow null user in kubeconfig's context by @aviramha in https://github.com/kube-rs/kube/pull/1608
+* Gauge SelectableField by k8s 1.30 version by @Danil-Grigorev in https://github.com/kube-rs/kube/pull/1610
+* Add a compile_error if setting selectable fields on K8s < 1.30 by @clux in https://github.com/kube-rs/kube/pull/1612
+* conditionally install `aws-lc-rs` by @goenning in https://github.com/kube-rs/kube/pull/1617
+* Warn when trying to use an unsupported proxy protocol by @nightkr in https://github.com/kube-rs/kube/pull/1626
+
+[0.96.0](https://github.com/kube-rs/kube/releases/tag/0.96.0) / 2024-10-09
+===================
+<!-- Release notes generated using configuration in .github/release.yml at 0.96.0 -->
+## Highlights
+- **[Features](https://kube.rs/features/)**: `webpki-roots` added [#1323](https://github.com/kube-rs/kube/issues/1323), and [predicates](https://docs.rs/kube/latest/kube/runtime/utils/predicates/index.html) no longer require `unstable-runtime` [#1578](https://github.com/kube-rs/kube/issues/1578)
+- **Local auth**: improve leniency/kubectl-alignment [#1595](https://github.com/kube-rs/kube/issues/1595), remove http proxy vars [#1520](https://github.com/kube-rs/kube/issues/1520)
+- **Dependencies**: upgrades to `tower` and `secrecy`, and `derivative` swapped for `educe`
+
+## What's Changed
+### Added
+* rustls: optionally use WebPKI roots to avoid panicking on Android & iOS by @ewilken in https://github.com/kube-rs/kube/pull/1323
+* Stabilise runtime predicates by @clux in https://github.com/kube-rs/kube/pull/1578
+* Add `ObjectRef::from` as alias for `::from_obj` by @nightkr in https://github.com/kube-rs/kube/pull/1598
+### Changed
+* Bump `secrecy` to 0.10 by @clux in https://github.com/kube-rs/kube/pull/1588
+* Upgrades `tower` to 0.5.1 by @markdingram in https://github.com/kube-rs/kube/pull/1589
+* runtime: rename references from Flatten to Decode by @clux in https://github.com/kube-rs/kube/pull/1520
+### Removed
+* remove using HTTP PROXY from environment variable by @aviramha in https://github.com/kube-rs/kube/pull/1587
+### Fixed
+* replace derivative dependency with educe by @rorosen in https://github.com/kube-rs/kube/pull/1585
+* change auth behavior to match upstream on unknown/empty user - use null auth by @aviramha in https://github.com/kube-rs/kube/pull/1595
+
+[0.95.0](https://github.com/kube-rs/kube/releases/tag/0.95.0) / 2024-09-16
+===================
+<!-- Release notes generated using configuration in .github/release.yml at 0.95.0 -->
+## Kubernetes `v1_31` support via `k8s-openapi` [0.23](https://github.com/Arnavion/k8s-openapi/releases/tag/v0.23.0)
+Please [upgrade k8s-openapi along with kube](https://kube.rs/upgrading/) to avoid conflicts.
+
+New minimum versions: [MSRV](https://kube.rs/rust-version/) 1.77.2, [MK8SV](https://kube.rs/kubernetes-version/): 1.26
+
+## What's Changed
+### Changed
+* Update tokio-tungstenite requirement from 0.23.0 to 0.24.0 by @dependabot in https://github.com/kube-rs/kube/pull/1579
+* Bump `k8s-openapi` to 0.23 for Kubernetes 1.31 support by @clux in https://github.com/kube-rs/kube/pull/1581
+
+
+**Full Changelog**: https://github.com/kube-rs/kube/compare/0.94.2...0.95.0
+[0.94.2](https://github.com/kube-rs/kube/releases/tag/0.94.2) / 2024-09-13
+===================
+<!-- Release notes generated using configuration in .github/release.yml at 0.94.2 -->
+
+## What's Changed
+Fixes a runtime regression in [`watch_object`](https://docs.rs/kube/latest/kube/runtime/watcher/fn.watch_object.html).
+
+### Fixed
+* Ensure `watch_object` handles objects removed before init by @markdingram in https://github.com/kube-rs/kube/pull/1577
+
+[0.94.1](https://github.com/kube-rs/kube/releases/tag/0.94.1) / 2024-09-09
+===================
+<!-- Release notes generated using configuration in .github/release.yml at 0.94.1 -->
+
+## What's Changed
+Convenience release. Adjusted a version bound to avoid possibility of running into version compatibility errors with `hyper-rustls`.
+
+### Fixed
+* Update hyper-rustls minimum version by @divergentdave in https://github.com/kube-rs/kube/pull/1575
+
+[0.94.0](https://github.com/kube-rs/kube/releases/tag/0.94.0) / 2024-09-09
+===================
+<!-- Release notes generated using configuration in .github/release.yml at 0.94.0 -->
+## Highlights
+Support for `rustls`'s [aws-lc-rs](https://aws.amazon.com/blogs/opensource/introducing-aws-libcrypto-for-rust-an-open-source-cryptographic-library-for-rust/) is available under a new `kube/aws-lc-rs` feature. Via https://github.com/kube-rs/kube/pull/1568 for https://github.com/kube-rs/kube/issues/1562
+
+Furthermore, there are improvements to [partial typing](https://kube.rs/controllers/object/#partially-typed-resource):
+
+1. Added a [`DeserializeGuard`](https://docs.rs/kube/latest/kube/core/struct.DeserializeGuard.html) safety wrapper to lift deserialisation errors (to e.g. not break watchers). See the [errorbound example](https://github.com/kube-rs/kube/blob/main/examples/errorbounded_configmap_watcher.rs) and [core module](https://docs.rs/kube/latest/kube/core/error_boundary/index.html) module.  Wrapped type be used with e.g. `Api::<DeserializeGuard<CaConfigMap>>`. Via https://github.com/kube-rs/kube/pull/1556
+2. A derive macro for [`Resource`](https://docs.rs/kube/latest/kube/trait.Resource.html); [`#[derive(Resource)]`](https://docs.rs/kube/latest/kube/derive.Resource.html) allows inheriting existing `k8s-openapi` resource implementations to avoid stepping down to the dynamic api. See the [cert check example](https://github.com/kube-rs/kube/blob/main/examples/cert_check.rs) for usage. Via https://github.com/kube-rs/kube/pull/1565
+
+## What's Changed
+### Added
+* Add error boundary wrapper type by @nightkr in https://github.com/kube-rs/kube/pull/1556
+* Implement Error for error_boundary::InvalidObject by @nightkr in https://github.com/kube-rs/kube/pull/1558
+* Add finalizers predicate filter by @ivan-kiselev in https://github.com/kube-rs/kube/pull/1560
+* optional feature to use `aws-lc-rs` rustls feature by @mcluseau in https://github.com/kube-rs/kube/pull/1568
+* Add `Resource` derive macro by @Danil-Grigorev in https://github.com/kube-rs/kube/pull/1565
+### Changed
+* Make implicitly dependent feature explicitly depend on each other by @clux in https://github.com/kube-rs/kube/pull/1551
 
 [0.93.1](https://github.com/kube-rs/kube/releases/tag/0.93.1) / 2024-07-23
 ===================
