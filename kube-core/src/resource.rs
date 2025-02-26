@@ -207,6 +207,8 @@ where
 /// Helper methods for resources.
 pub trait ResourceExt: Resource {
     /// asdasds
+    /// a
+    /// sdasdas
     /// Returns the name of the resource, panicking if it is unset
     ///
     /// Only use this function if you know that name is set; for example when
