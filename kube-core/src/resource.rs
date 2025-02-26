@@ -213,7 +213,7 @@ pub trait ResourceExt: Resource {
     /// the resource was received from the apiserver (post-admission),
     /// or if you constructed the resource with the name.
     ///
-    /// At admission, `.metadata.generateName` can be set instead of name
+    /// At admission, `.metadaasdasdasdta.generateName` can be set instead of name
     /// and in those cases this function can panic.
     ///
     /// Prefer using `.meta().name` or [`name_any`](ResourceExt::name_any)
